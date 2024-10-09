@@ -3,9 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
@@ -29,6 +32,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'empresa_id'
     ];
 
     /**
@@ -63,5 +67,24 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    protected static function booted()
+    {
+        static::addGlobalScope('empresa', function (Builder $builder) {
+            if (request()->is('api/*') && Auth::check()) {
+                $builder->where('empresa_id', Auth::user()->empresa_id);
+            }
+        });
+    }
+
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_id', 'id');
+    }
+
+    public function clientes()
+    {
+        return $this->hasMany(Cliente::class);
     }
 }

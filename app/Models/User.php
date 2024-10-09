@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -69,9 +71,9 @@ class User extends Authenticatable
 
     protected static function booted()
     {
-        static::addGlobalScope('empresa', function ($query) {
-            if (Auth::check()) {
-                $query->where('empresa_id', Auth::user()->empresa_id);
+        static::addGlobalScope('empresa', function (Builder $builder) {
+            if (request()->is('api/*') && Auth::check()) {
+                $builder->where('empresa_id', Auth::user()->empresa_id);
             }
         });
     }

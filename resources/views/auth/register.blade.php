@@ -10,8 +10,13 @@
             @csrf
 
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
+                <x-label for="name" value="{{ __('Nome de Usuario') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+            </div>
+
+            <div class="mt-4">
+                <x-label for="cliente_nome" value="{{ __('Nome Cliente') }}" />
+                <x-input id="cliente_nome" class="block mt-1 w-full" type="text" name="cliente_nome" :value="old('cliente_nome')" required autofocus autocomplete="cliente_nome" />
             </div>
 
             <div class="mt-4">
@@ -29,6 +34,17 @@
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
+            <div class="mt-4">
+                <x-label for="empresa_id" value="{{ __('Selecione uma empresa') }}" />
+                <select id="empresa_id" class="block mt-1 w-full" name="empresa_id" required>
+                    @foreach($empresas as $empresa)
+                        <option value="{{ $empresa->id }}" {{ old('empresa_id') == $empresa->id ? 'selected' : '' }}>
+                            {{ $empresa->empresa_nome }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+           
             @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
                 <div class="mt-4">
                     <x-label for="terms">
